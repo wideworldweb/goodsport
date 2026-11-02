@@ -56,7 +56,7 @@ describe('getFeed', () => {
 			{
 				title: 'Meaning Making in Sports Media with Harry Krinsky',
 				link: 'https://www.goodsportnyc.com/p/meaning-making',
-				description: 'Listen now (66 mins) | I talked to the co-host of Nothing But Respect.',
+				description: 'Listen now (66 mins) | I talked to the co-host of Nothing But Respect & it’s great.',
 				pubDate: '2026-10-15T11:03:57.000Z',
 				author: 'Christiana Cromer',
 				image: 'https://substackcdn.com/image/fetch/harry-cover.png',

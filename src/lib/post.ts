@@ -15,11 +15,20 @@ export const isEpisode = (post: Post) => post.audio !== null;
 export const isIssue = (post: Post) =>
 	!isEpisode(post) && (NEWSLETTER_PREFIX.test(post.title) || DATE_RANGE.test(post.title));
 
-export function guestName(title: string): string {
+const EPISODE_NAMES: Record<string, string> = {
+	'Why I’m Building a Women’s Sports Media Company': 'Why Good Sport',
+	'Are the New York Liberty okay?': 'Liberty okay?',
+	"Women's Pro Baseball is Back After 70 Years": 'Pro Baseball'
+};
+
+export function episodeName(title: string): string {
+	if (EPISODE_NAMES[title]) return EPISODE_NAMES[title];
 	const guest = title.match(/\bwith\s+(.+)$/i)?.[1];
 	if (!guest) return title;
 	return guest.replace(/^.*['’]s?\s+/, '');
 }
+
+export const episodeSummary = (description: string) => description.replace(/^Listen now\b[^|]*\|\s*/i, '');
 
 export const shortDateOf = (iso: string) => shortDate.format(new Date(iso));
 

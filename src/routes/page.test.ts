@@ -155,9 +155,10 @@ const issue = (n: number, day: number) =>
 		image: `https://substackcdn.com/image/issue-${n}.jpg`
 	});
 
-const episode = (title: string, slug: string, pubDate: string) =>
+const episode = (title: string, slug: string, pubDate: string, description = '') =>
 	post({
 		title,
+		description,
 		link: `https://www.goodsportnyc.com/p/${slug}`,
 		pubDate,
 		image: `https://substackcdn.com/image/${slug}.png`,
@@ -174,7 +175,12 @@ const usOpen = post({
 
 const fullFeed = feed([
 	weeklyIssue,
-	episode('Meaning Making in Sports Media with Harry Krinsky', 'harry', '2026-10-15T11:00:00.000Z'),
+	episode(
+		'Meaning Making in Sports Media with Harry Krinsky',
+		'harry',
+		'2026-10-15T11:00:00.000Z',
+		'Listen now (66 mins) | I talked to the co-host of Nothing But Respect about making meaning in sports.'
+	),
 	issue(1, 21),
 	episode('The Sports Media Nepisode with Ashtyn Butuso', 'ashtyn', '2026-10-01T11:00:00.000Z'),
 	issue(2, 14),
@@ -182,7 +188,12 @@ const fullFeed = feed([
 	usOpen,
 	issue(3, 7),
 	issue(4, 1),
-	episode('Why I’m Building a Women’s Sports Media Company', 'why', '2026-08-28T11:00:00.000Z'),
+	episode(
+		'Why I’m Building a Women’s Sports Media Company',
+		'why',
+		'2026-08-28T11:00:00.000Z',
+		'Listen now | The origin story and the big vision for Good Sport.'
+	),
 	episode('Are the New York Liberty okay?', 'liberty', '2026-08-14T11:00:00.000Z')
 ]);
 
@@ -229,9 +240,9 @@ describe('the latest section', () => {
 describe('the podcast section', () => {
 	it('shows the four newest episodes, named after their guests, linking to each episode', () => {
 		const podcast = section(renderPage(fullFeed), 'The Podcast')!;
-		const episodeLinks = links(podcast).filter((link) => link.href.includes('/p/'));
+		const episodeHrefs = [...new Set(links(podcast).map((link) => link.href).filter((href) => href.includes('/p/')))];
 
-		expect(episodeLinks.map((link) => link.href)).toEqual([
+		expect(episodeHrefs).toEqual([
 			'https://www.goodsportnyc.com/p/harry',
 			'https://www.goodsportnyc.com/p/ashtyn',
 			'https://www.goodsportnyc.com/p/faith',
@@ -241,7 +252,26 @@ describe('the podcast section', () => {
 		expect(text).toContain('Harry Krinsky');
 		expect(text).toContain('Ashtyn Butuso');
 		expect(text).toContain('Faith Morley');
-		expect(text).toContain('Why I’m Building a Women’s Sports Media Company');
+	});
+
+	it('uses a short card name for episodes whose titles do not name a guest', () => {
+		const podcast = section(renderPage(fullFeed), 'The Podcast')!;
+
+		expect(links(podcast).map((link) => link.text)).toContain('Why Good Sport');
+	});
+
+	it('lists each episode’s full title and description under its card, without the listen-now prefix', () => {
+		const podcast = section(renderPage(fullFeed), 'The Podcast')!;
+		const text = textOf(podcast);
+
+		expect(links(podcast)).toContainEqual({
+			href: 'https://www.goodsportnyc.com/p/harry',
+			text: 'Meaning Making in Sports Media with Harry Krinsky'
+		});
+		expect(text).toContain('I talked to the co-host of Nothing But Respect about making meaning in sports.');
+		expect(text).toContain('The origin story and the big vision for Good Sport.');
+		expect(text).not.toContain('Listen now');
+		expect(text).toMatch(/Podcast\W+Oct 15/);
 	});
 
 	it('links to all episodes', () => {

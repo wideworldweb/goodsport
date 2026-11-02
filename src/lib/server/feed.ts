@@ -23,8 +23,19 @@ export interface Feed {
 
 let cache: Feed | null = null;
 
+const NAMED_ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00a0' };
+
+// Substack wraps titles and descriptions in CDATA, so HTML entities inside them reach us undecoded.
+function decodeEntities(value: string): string {
+	return value.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, code: string) => {
+		if (code[0] !== '#') return NAMED_ENTITIES[code.toLowerCase()] ?? match;
+		const point = code[1] === 'x' || code[1] === 'X' ? parseInt(code.slice(2), 16) : parseInt(code.slice(1), 10);
+		return Number.isFinite(point) ? String.fromCodePoint(point) : match;
+	});
+}
+
 function text(value: unknown): string {
-	if (typeof value === 'string') return value.trim();
+	if (typeof value === 'string') return decodeEntities(value.trim());
 	if (typeof value === 'number') return String(value);
 	return '';
 }
