@@ -32,7 +32,7 @@
 		letter-spacing: -0.01em;
 		text-transform: uppercase;
 		paint-order: stroke fill;
-		-webkit-text-stroke: 0.08em var(--stroke);
+		-webkit-text-stroke: 0.03em var(--stroke);
 	}
 
 	.on-blue h2 {
