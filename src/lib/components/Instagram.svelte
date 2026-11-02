@@ -46,10 +46,9 @@
 
 	ul {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(6, minmax(0, 1fr));
 		gap: 1rem;
-		max-width: 52rem;
-		margin: 0 auto;
+		margin: 0;
 		padding: 0;
 		list-style: none;
 	}
@@ -57,7 +56,7 @@
 	.tile {
 		position: relative;
 		display: block;
-		aspect-ratio: 9 / 13;
+		aspect-ratio: 4 / 5;
 		border-radius: 0.75rem;
 		background: var(--bg);
 		transition: transform 150ms ease-out;
@@ -119,6 +118,7 @@
 
 	.button {
 		display: inline-flex;
+		align-items: center;
 		gap: 1rem;
 		padding: 0.55rem 1rem 0.5rem;
 		background: var(--red);
@@ -143,6 +143,12 @@
 		.tile,
 		.button {
 			transition: none;
+		}
+	}
+
+	@media (max-width: 64rem) {
+		ul {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 	}
 

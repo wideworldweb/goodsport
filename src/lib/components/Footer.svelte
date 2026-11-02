@@ -48,7 +48,7 @@
 	</div>
 
 	<div class="credit">
-		<p>© {year} Good Sport NYC <span aria-hidden="true">•</span> Women's sports culture in New York City</p>
+		<p>© {year} Good Sport NYC<span aria-hidden="true">•</span>Women's sports culture in New York City</p>
 		<p>A sports media company from <a href="https://www.goodsportnyc.com/about">Christiana Cromer</a></p>
 	</div>
 </footer>

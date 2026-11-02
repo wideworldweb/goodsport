@@ -44,7 +44,7 @@
 
 <style>
 	.latest {
-		padding: clamp(4rem, 9vw, 8rem) var(--page-pad);
+		padding: clamp(4rem, 9vw, 8rem) var(--page-pad) clamp(3rem, 6vw, 5rem);
 		background: var(--blue);
 		color: var(--cream);
 	}
