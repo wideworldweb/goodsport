@@ -1,0 +1,93 @@
+<script lang="ts">
+	let {
+		items,
+		background,
+		color,
+		direction = 'left',
+		seconds = 40
+	}: {
+		items: string[];
+		background: string;
+		color: string;
+		direction?: 'left' | 'right';
+		seconds?: number;
+	} = $props();
+
+	const COPIES = 4;
+</script>
+
+<div
+	class="ticker layer"
+	class:right={direction === 'right'}
+	style:--bg={background}
+	style:--fg={color}
+	style:--seconds="{seconds}s"
+>
+	<p class="visually-hidden">{items.join(', ')}</p>
+	<div class="track" aria-hidden="true">
+		{#each { length: COPIES }, i (i)}
+			<span class="copy"
+				>{#each items as item, j (j)}{item}<span class="dash">-</span>{/each}</span
+			>
+		{/each}
+	</div>
+</div>
+
+<style>
+	.ticker {
+		overflow: hidden;
+		background: var(--bg);
+		color: var(--fg);
+		border-bottom: 2px dotted var(--ink);
+	}
+
+	.track {
+		display: flex;
+		width: max-content;
+		padding: 0.7rem 0 0.6rem;
+	}
+
+	.copy {
+		flex: none;
+		font-family: var(--font-pixel);
+		font-size: 32px;
+		line-height: 1;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		white-space: pre;
+		will-change: transform;
+		animation: scroll var(--seconds) linear infinite;
+	}
+
+	/* The pixel font has no long dash, so stretch its hyphen, which sits at the font's mid-height. */
+	.dash {
+		display: inline-block;
+		margin: 0 0.75em;
+		transform: scaleX(2.4);
+	}
+
+	.right .copy {
+		animation-direction: reverse;
+	}
+
+	@keyframes scroll {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-100%);
+		}
+	}
+
+	@media (max-width: 40rem) {
+		.copy {
+			font-size: 16px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.copy {
+			animation: none;
+		}
+	}
+</style>

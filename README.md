@@ -1,6 +1,8 @@
 # Good Sport
 
-A bare page listing the posts from the Good Sport NYC Substack (https://www.goodsportnyc.com/feed): the feed title, then each post as a link with its publish date. SvelteKit (Svelte 5) deployed as a Cloudflare Worker. There is no server-side database or secrets yet.
+The Good Sport NYC homepage: posts from the Good Sport NYC Substack (https://www.goodsportnyc.com/feed), tickers with upcoming games and results for the Liberty, Gotham FC, Brooklyn FC and Sirens, and a subscribe form that hands off to Substack. SvelteKit (Svelte 5) deployed as a Cloudflare Worker. There is no server-side database or secrets yet.
+
+Team schedules are fetched at request time from public, unofficial endpoints (ESPN's site API and the PWHL's HockeyTech feed). They need no API keys or secrets; if one is down, that team just drops out of the tickers.
 
 ## Commands
 
