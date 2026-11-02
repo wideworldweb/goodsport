@@ -6,7 +6,7 @@
 	let { featured, issues }: { featured: Post | undefined; issues: Post[] } = $props();
 </script>
 
-<section class="latest">
+<section class="latest layer">
 	<SectionHeader title="The Latest" href="https://www.goodsportnyc.com/archive" linkText="See all" tone="on-blue" />
 
 	<div class="columns">

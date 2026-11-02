@@ -8,7 +8,7 @@
 	const tones = ['blue', 'red', 'amber', 'ink'] as const;
 </script>
 
-<section class="podcast">
+<section class="podcast layer">
 	<SectionHeader title="The Podcast" href="https://www.goodsportnyc.com/podcast" linkText="All episodes" tone="on-cream" />
 
 	<ul>
