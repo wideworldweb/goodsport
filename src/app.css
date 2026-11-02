@@ -43,7 +43,7 @@ a {
 }
 
 .oval {
-	--tilt: 30deg;
+	--tilt: 17deg;
 	--ratio: 0.6;
 
 	position: fixed;
