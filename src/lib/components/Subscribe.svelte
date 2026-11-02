@@ -68,7 +68,7 @@
 		justify-content: center;
 		width: min(62rem, 80vw);
 		aspect-ratio: 1 / 0.5;
-		padding: 0 16%;
+		padding: 0 13%;
 		border-radius: 50%;
 		background: var(--cream);
 		color: var(--ink);
@@ -93,13 +93,13 @@
 		color: var(--blue);
 		font-family: var(--font-display);
 		font-weight: 400;
-		font-size: clamp(1.5rem, 3.4vw, 2.5rem);
-		line-height: 1;
+		font-size: clamp(2rem, 4.6vw, 3.75rem);
+		line-height: 0.98;
 	}
 
 	.pitch {
-		margin: 0 0 1.25rem;
-		font-size: clamp(0.7rem, 1.1vw, 0.8125rem);
+		margin: 0 0 1.5rem;
+		font-size: clamp(0.85rem, 1.45vw, 1.1rem);
 		line-height: 1.45;
 	}
 
@@ -112,12 +112,12 @@
 	input {
 		flex: 1;
 		min-width: 0;
-		padding: 0.65rem 0.8rem;
+		padding: 0.8rem 1rem;
 		border: 2px solid var(--blue);
 		background: transparent;
 		color: var(--ink);
 		font: inherit;
-		font-size: 0.875rem;
+		font-size: 1.05rem;
 	}
 
 	input:focus-visible {
@@ -126,12 +126,12 @@
 	}
 
 	button {
-		padding: 0.5rem 1rem 0.45rem;
+		padding: 0.6rem 1.25rem 0.55rem;
 		border: none;
 		background: var(--red);
 		color: var(--cream);
 		font-family: var(--font-pixel);
-		font-size: 16px;
+		font-size: 24px;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 		cursor: pointer;
