@@ -42,6 +42,24 @@ a {
 	color: inherit;
 }
 
+.oval {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 1;
+	width: 120vmin;
+	height: 64vmin;
+	border: 24px solid var(--amber);
+	border-radius: 50%;
+	transform: translate(-50%, -50%) rotate(-45deg);
+	pointer-events: none;
+}
+
+:where(.layer) > * {
+	position: relative;
+	z-index: 2;
+}
+
 .visually-hidden {
 	position: absolute;
 	width: 1px;

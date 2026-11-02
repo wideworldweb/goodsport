@@ -18,7 +18,7 @@
 </script>
 
 <div
-	class="ticker"
+	class="ticker layer"
 	class:right={direction === 'right'}
 	style:--bg={background}
 	style:--fg={color}

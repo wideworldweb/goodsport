@@ -34,7 +34,7 @@
 	</div>
 
 	{#if older.length > 0}
-		<section class="archive" aria-labelledby="archive-heading">
+		<section class="archive layer" aria-labelledby="archive-heading">
 			<h2 id="archive-heading">More from {data.feed.title}</h2>
 			<ul>
 				{#each older as post (post.link)}

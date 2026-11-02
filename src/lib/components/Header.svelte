@@ -9,7 +9,7 @@
 	];
 </script>
 
-<header>
+<header class="layer">
 	<a class="logo" href="/">
 		<img src="/logo.png" alt={title} width="998" height="668" />
 	</a>

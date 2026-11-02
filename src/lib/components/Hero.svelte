@@ -14,7 +14,7 @@
 	}).join(', ');
 </script>
 
-<section class="hero">
+<section class="hero layer">
 	<div class="copy">
 		<p class="label">
 			<span class="dot" aria-hidden="true"></span>

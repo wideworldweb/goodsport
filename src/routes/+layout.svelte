@@ -13,4 +13,6 @@
 	<link rel="preload" href="/fonts/MinimalFont5x7.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
 </svelte:head>
 
+<div class="oval" aria-hidden="true"></div>
+
 {@render children()}
