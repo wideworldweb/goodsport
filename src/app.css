@@ -1,0 +1,53 @@
+@font-face {
+	font-family: 'Minimal 5x7';
+	src: url('/fonts/MinimalFont5x7.ttf') format('truetype');
+	font-display: block;
+}
+
+:root {
+	--red: #fb000b;
+	--blue: #305bac;
+	--ink: #1b1d1c;
+	--cream: #f9f3dc;
+	--amber: #fab54b;
+
+	--font-display: 'Alfa Slab One', Georgia, serif;
+	--font-mono: 'DM Mono', ui-monospace, monospace;
+	--font-pixel: 'Minimal 5x7', 'DM Mono', monospace;
+	--font-sans: 'PP Neue Gstaad', 'Helvetica Neue', Arial, sans-serif;
+	--font-condensed: 'PP Neue Gstaad', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+
+	--page-pad: clamp(1rem, 4vw, 2.5rem);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	scrollbar-gutter: stable;
+}
+
+body {
+	margin: 0;
+	background: var(--cream);
+	color: var(--ink);
+	font-family: var(--font-sans);
+	-webkit-font-smoothing: antialiased;
+}
+
+a {
+	color: inherit;
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
