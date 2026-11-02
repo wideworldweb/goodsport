@@ -52,7 +52,7 @@
 	nav a,
 	.subscribe {
 		font-family: var(--font-condensed);
-		font-stretch: condensed;
+		font-stretch: 72%;
 		font-weight: 700;
 		text-transform: uppercase;
 		text-decoration: none;
