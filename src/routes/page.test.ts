@@ -119,7 +119,7 @@ describe('home page hero', () => {
 		const body = renderPage(feed([post({ title: 'No photo this week' })]));
 
 		expect(headings(body)).toEqual(['No photo this week']);
-		expect(images(body).map((img) => img.alt)).toEqual(['Good Sport NYC']);
+		expect(images(body).filter((img) => img.src !== '/logo.png')).toEqual([]);
 	});
 });
 
@@ -141,8 +141,10 @@ describe('home page chrome', () => {
 });
 
 const section = (html: string, heading: string) => {
-	const at = html.search(new RegExp(`<h2\\b[^>]*>\\s*${heading}\\s*</h2>`, 'i'));
-	if (at < 0) return null;
+	const at = [...html.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)].find(
+		(match) => textOf(match[1]).toLowerCase() === heading.toLowerCase()
+	)?.index;
+	if (at === undefined) return null;
 	const end = html.indexOf('</section>', at);
 	return html.slice(at, end < 0 ? undefined : end);
 };
@@ -295,5 +297,61 @@ describe('sections without posts', () => {
 
 		expect(section(body, 'The Latest')).toBeNull();
 		expect(section(body, 'The Podcast')).toBeNull();
+	});
+});
+
+const forms = (html: string) =>
+	[...html.matchAll(/<form\b([^>]*)>([\s\S]*?)<\/form>/g)].map(([, attrs, inner]) => ({
+		action: attr(attrs, 'action'),
+		method: attr(attrs, 'method').toLowerCase(),
+		inputs: [...inner.matchAll(/<input\b[^>]*>/g)].map(([tag]) => ({
+			name: attr(tag, 'name'),
+			type: attr(tag, 'type'),
+			required: /\srequired(?:=""|\s|>|\/)/.test(tag)
+		})),
+		buttons: [...inner.matchAll(/<button\b[^>]*>([\s\S]*?)<\/button>/g)].map(([, text]) => textOf(text))
+	}));
+
+describe('the instagram section', () => {
+	it('links to the Good Sport Instagram account', () => {
+		const instagram = section(renderPage(fullFeed), 'On Instagram')!;
+
+		expect(links(instagram)).toContainEqual({
+			href: 'https://www.instagram.com/goodsport.nyc/',
+			text: 'Follow @goodsportnyc'
+		});
+	});
+});
+
+describe('the subscribe section', () => {
+	it('sends the reader’s email to the Substack subscribe page', () => {
+		const subscribe = section(renderPage(feed([])), 'Your week in women’s sports, in your inbox.')!;
+
+		expect(forms(subscribe)).toEqual([
+			{
+				action: 'https://www.goodsportnyc.com/subscribe',
+				method: 'get',
+				inputs: [{ name: 'email', type: 'email', required: true }],
+				buttons: ['Subscribe']
+			}
+		]);
+	});
+});
+
+describe('the footer', () => {
+	it('links to the site’s sections and Good Sport elsewhere', () => {
+		const footer = renderPage(feed([])).match(/<footer\b[\s\S]*<\/footer>/)![0];
+		const byText = Object.fromEntries(links(footer).map((link) => [link.text, link.href]));
+
+		expect(byText).toMatchObject({
+			News: 'https://www.goodsportnyc.com',
+			Podcast: 'https://www.goodsportnyc.com/podcast',
+			'NYC Weekly': 'https://www.goodsportnyc.com/archive',
+			About: 'https://www.goodsportnyc.com/about',
+			Instagram: 'https://www.instagram.com/goodsport.nyc/',
+			Substack: 'https://www.goodsportnyc.com',
+			Subscribe: 'https://www.goodsportnyc.com/subscribe'
+		});
+		expect(Object.keys(byText)).toEqual(expect.arrayContaining(['Discord', 'Donate']));
 	});
 });

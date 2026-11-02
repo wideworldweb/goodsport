@@ -1,8 +1,11 @@
 <script lang="ts">
+	import Footer from '$lib/components/Footer.svelte';
 	import Header from '$lib/components/Header.svelte';
 	import Hero from '$lib/components/Hero.svelte';
+	import Instagram from '$lib/components/Instagram.svelte';
 	import Latest from '$lib/components/Latest.svelte';
 	import Podcast from '$lib/components/Podcast.svelte';
+	import Subscribe from '$lib/components/Subscribe.svelte';
 	import Ticker from '$lib/components/Ticker.svelte';
 	import TopBar from '$lib/components/TopBar.svelte';
 	import { isEpisode, isIssue } from '$lib/post';
@@ -51,4 +54,14 @@
 			<Podcast {episodes} />
 		</div>
 	{/if}
+
+	<div data-swing-section>
+		<Instagram />
+	</div>
+
+	<div data-morph-section>
+		<Subscribe />
+	</div>
 </main>
+
+<Footer />
