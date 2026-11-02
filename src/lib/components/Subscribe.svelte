@@ -50,7 +50,7 @@
 		font-family: var(--font-condensed);
 		font-weight: 800;
 		font-size: clamp(5.5rem, 14vw, 12rem);
-		line-height: 0.7;
+		line-height: 0.62;
 		letter-spacing: -0.015em;
 		text-transform: uppercase;
 		paint-order: stroke fill;
