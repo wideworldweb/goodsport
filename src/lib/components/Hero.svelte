@@ -37,7 +37,7 @@
 
 	<div class="art">
 		{#if post.image}
-			<img src={post.image} alt={title} width="900" height="850" />
+			<img src={post.image} alt="" width="900" height="850" />
 		{/if}
 		<div class="badge" aria-hidden="true">
 			<span class="burst" style:clip-path="polygon({starburst})"></span>

@@ -1,12 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import badDatesXml from './fixtures/bad-dates.xml?raw';
 import feedXml from './fixtures/feed.xml?raw';
+import oddEntitiesXml from './fixtures/odd-entities.xml?raw';
 import singleItemXml from './fixtures/single-item.xml?raw';
 
 const fixtures: Record<string, string> = {
 	'feed.xml': feedXml,
 	'single-item.xml': singleItemXml,
-	'bad-dates.xml': badDatesXml
+	'bad-dates.xml': badDatesXml,
+	'odd-entities.xml': oddEntitiesXml
 };
 
 const TEN_MINUTES = 10 * 60 * 1000;
@@ -72,6 +74,14 @@ describe('getFeed', () => {
 				audio: null
 			}
 		]);
+	});
+
+	it('leaves an impossible character code as written instead of failing', async () => {
+		const getFeed = await loadGetFeed();
+
+		const feed = await getFeed(fakeFetch(ok('odd-entities.xml')));
+
+		expect(feed.posts.map((p) => p.title)).toEqual(['Odd &#99999999; entity ’s fine']);
 	});
 
 	it('returns a single post when the feed has only one item', async () => {

@@ -2,6 +2,7 @@ import { XMLParser } from 'fast-xml-parser';
 
 const FEED_URL = 'https://www.goodsportnyc.com/feed';
 const TTL_MS = 10 * 60 * 1000;
+const TIMEOUT_MS = 5000;
 
 export interface Post {
 	title: string;
@@ -30,7 +31,7 @@ function decodeEntities(value: string): string {
 	return value.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, code: string) => {
 		if (code[0] !== '#') return NAMED_ENTITIES[code.toLowerCase()] ?? match;
 		const point = code[1] === 'x' || code[1] === 'X' ? parseInt(code.slice(2), 16) : parseInt(code.slice(1), 10);
-		return Number.isFinite(point) ? String.fromCodePoint(point) : match;
+		return Number.isInteger(point) && point >= 0 && point <= 0x10ffff ? String.fromCodePoint(point) : match;
 	});
 }
 
@@ -82,7 +83,8 @@ function parseFeed(xml: string): Feed {
 
 async function fetchFeed(fetchFn: typeof fetch): Promise<Feed> {
 	const res = await fetchFn(FEED_URL, {
-		headers: { accept: 'application/rss+xml, application/xml' }
+		headers: { accept: 'application/rss+xml, application/xml' },
+		signal: AbortSignal.timeout(TIMEOUT_MS)
 	});
 	if (!res.ok) throw new Error(`Feed request failed with status ${res.status}`);
 	return parseFeed(await res.text());

@@ -53,6 +53,12 @@ describe('up next band', () => {
 		expect(upNext).not.toContain('Sirens: Back in December');
 	});
 
+	it('skips a game that has started but is not final yet', () => {
+		const [upNext] = tickerBands([game({ start: '2026-11-02T15:00:00.000Z' })], [], NOW);
+
+		expect(upNext).toContain('Sirens: Back in December');
+	});
+
 	it('treats a game more than six weeks out as the off-season', () => {
 		const [upNext] = tickerBands([game({ team: 'Liberty', start: '2027-05-15T23:00:00.000Z' })], [], NOW);
 
@@ -86,8 +92,8 @@ describe('results band', () => {
 describe('every band', () => {
 	it('only uses separators the pixel font draws at the right height', () => {
 		const bands = tickerBands(
-			[{ team: 'Sirens', opponent: 'Fleet', home: true, start: '2026-12-06T20:00:00.000Z', venue: 'Prudential Center', final: false, teamScore: null, opponentScore: null }],
-			[post('Meaning Making with Harry Krinsky', 'https://x/ep.mp3')],
+			[game({ venue: 'Prudential Center – Newark’s “Rock”' })],
+			[post('Meaning Making with Harry Krinsky – Part 2', 'https://x/ep.mp3'), post('Kickoff — what’s next')],
 			NOW
 		);
 
@@ -96,13 +102,16 @@ describe('every band', () => {
 });
 
 describe('good sport band', () => {
-	it('names the newest issue and newest episode with straight apostrophes', () => {
+	it('names the newest issue, newest episode and newest other post', () => {
 		const [, , ours] = tickerBands(
 			[],
 			[
 				post('WNBA Finals Game 6 Moves to a Workday Matinee'),
 				post("[Good Sport NYC] Women’s Sports in New York: Oct 19 - 25"),
-				post('Meaning Making in Sports Media with Harry Krinsky', 'https://x/ep.mp3')
+				post('Meaning Making in Sports Media with Harry Krinsky', 'https://x/ep.mp3'),
+				post("[Good Sport NYC] Women’s Sports in New York: Oct 12 - 18"),
+				post('The Sports Media Nepisode with Ashtyn Butuso', 'https://x/ep2.mp3'),
+				post('Are the New York Liberty okay?')
 			],
 			NOW
 		);

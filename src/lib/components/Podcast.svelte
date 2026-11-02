@@ -15,7 +15,13 @@
 		{#each episodes as episode, i (episode.link)}
 			{@const tone = tones[i % tones.length]}
 			<li>
-				<a class="card {tone}" class:play-left={tone === 'blue' || tone === 'amber'} href={episode.link}>
+				<a
+					class="card {tone}"
+					class:play-left={tone === 'blue' || tone === 'amber'}
+					href={episode.link}
+					tabindex="-1"
+					aria-hidden="true"
+				>
 					<span class="name">{episodeName(episode.title)}</span>
 					<span class="play" aria-hidden="true"></span>
 				</a>

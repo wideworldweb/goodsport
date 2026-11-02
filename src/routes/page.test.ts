@@ -108,10 +108,10 @@ describe('home page hero', () => {
 		expect(at('2026-10-22T17:00:00.000Z')).toContain('3 days ago');
 	});
 
-	it('shows the newest post’s image with its title as alt text', () => {
+	it('shows the newest post’s image as decoration, since the headline already names it', () => {
 		expect(images(renderPage(feed([weeklyIssue])))).toContainEqual({
 			src: 'https://substackcdn.com/image/fetch/oct-19.jpg',
-			alt: "Women's Sports in New York: Oct 19 - 25"
+			alt: ''
 		});
 	});
 
@@ -127,15 +127,21 @@ describe('ticker bands', () => {
 	it('show the up-next, results and Good Sport items they are given', () => {
 		const text = textOf(
 			renderPage(feed([]), NOW, [
-				['Sirens vs Fleet · Sun Dec 6 · 3PM · Prudential Center'],
+				['Sirens vs Fleet, Sun Dec 6, 3PM, Prudential Center'],
 				['Gotham FC 2-0 Utah'],
-				['New on the pod · Harry Krinsky']
+				['New on the pod: Harry Krinsky']
 			])
 		);
 
-		expect(text).toContain('Sirens vs Fleet · Sun Dec 6 · 3PM · Prudential Center');
+		expect(text).toContain('Sirens vs Fleet, Sun Dec 6, 3PM, Prudential Center');
 		expect(text).toContain('Gotham FC 2-0 Utah');
-		expect(text).toContain('New on the pod · Harry Krinsky');
+		expect(text).toContain('New on the pod: Harry Krinsky');
+	});
+
+	it('show the site name in a band that has nothing to say', () => {
+		const text = textOf(renderPage(feed([], 'Good Sport NYC'), NOW, [['Gotham FC 2-0 Utah'], [], []]));
+
+		expect(text.split('Good Sport NYC').length - 1).toBeGreaterThanOrEqual(2);
 	});
 });
 
@@ -256,6 +262,15 @@ describe('the latest section', () => {
 });
 
 describe('the podcast section', () => {
+	it('gives keyboard and screen reader users one link per episode', () => {
+		const podcast = section(renderPage(fullFeed), 'The Podcast')!;
+		const reachable = [...podcast.matchAll(/<a\b([^>]*)>/g)]
+			.map(([, attrs]) => attrs)
+			.filter((attrs) => !/aria-hidden="true"/.test(attrs) && attr(attrs, 'href').includes('/p/'));
+
+		expect(reachable).toHaveLength(4);
+	});
+
 	it('shows the four newest episodes, named after their guests, linking to each episode', () => {
 		const podcast = section(renderPage(fullFeed), 'The Podcast')!;
 		const episodeHrefs = [...new Set(links(podcast).map((link) => link.href).filter((href) => href.includes('/p/')))];
@@ -308,7 +323,7 @@ describe('the podcast section', () => {
 });
 
 describe('sections without posts', () => {
-	it('leaves out the latest and podcast sections when there is nothing to show', () => {
+	it('leaves out the latest and podcast sections when only the hero post exists', () => {
 		const body = renderPage(feed([weeklyIssue]));
 
 		expect(section(body, 'The Latest')).toBeNull();

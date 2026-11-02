@@ -1,4 +1,6 @@
 const TTL_MS = 10 * 60 * 1000;
+const RETRY_MS = 60 * 1000;
+const TIMEOUT_MS = 4000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const ESPN = 'https://site.api.espn.com/apis/site/v2/sports';
 const PWHL = 'https://lscluster.hockeytech.com/feed/index.php?feed=modulekit&key=694cfeed58c932ee&client_code=pwhl&fmt=json';
@@ -31,10 +33,10 @@ export const TEAMS: Team[] = [
 	{ name: 'Sirens', returns: 'December', source: { kind: 'pwhl', teamName: 'New York Sirens' } }
 ];
 
-let cache: { games: Game[]; fetchedAt: number } | null = null;
+let cache: { games: Game[]; expiresAt: number } | null = null;
 
 async function getJson<T>(fetchFn: typeof fetch, url: string): Promise<T> {
-	const res = await fetchFn(url, { headers: HEADERS });
+	const res = await fetchFn(url, { headers: HEADERS, signal: AbortSignal.timeout(TIMEOUT_MS) });
 	if (!res.ok) throw new Error(`${url} responded ${res.status}`);
 	return res.json() as Promise<T>;
 }
@@ -143,15 +145,16 @@ function teamGames(fetchFn: typeof fetch, team: Team): Promise<Game[]> {
 }
 
 export async function getGames(fetchFn: typeof fetch = fetch): Promise<Game[]> {
-	if (cache && Date.now() - cache.fetchedAt < TTL_MS) return cache.games;
+	if (cache && Date.now() < cache.expiresAt) return cache.games;
 
 	const results = await Promise.allSettled(TEAMS.map((team) => teamGames(fetchFn, team)));
+	const anyFailed = results.some((result) => result.status === 'rejected');
 	const games = results.flatMap((result, i) => {
 		if (result.status === 'fulfilled') return result.value;
 		// One league's API being down shouldn't blank the tickers; that team just drops out until the next refresh.
 		console.warn(`Schedule unavailable for ${TEAMS[i].name}`, result.reason);
 		return [];
 	});
-	cache = { games, fetchedAt: Date.now() };
+	cache = { games, expiresAt: Date.now() + (anyFailed ? RETRY_MS : TTL_MS) };
 	return games;
 }

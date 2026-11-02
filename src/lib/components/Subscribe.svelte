@@ -80,11 +80,11 @@
 		transition: opacity 300ms ease-out;
 	}
 
-	.card:global([data-oval-state='waiting']) {
+	.card:global([data-oval-state='waiting']):not(:focus-within) {
 		background-color: transparent;
 	}
 
-	.card:global([data-oval-state='waiting']) > * {
+	.card:global([data-oval-state='waiting']):not(:focus-within) > * {
 		opacity: 0;
 	}
 

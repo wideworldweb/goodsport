@@ -125,10 +125,14 @@
 		addEventListener('resize', remeasure);
 		reducedMotion.addEventListener('change', onMotionPreference);
 		document.addEventListener('visibilitychange', onVisibility);
-		document.fonts.ready.then(remeasure);
+		let disposed = false;
+		document.fonts.ready.then(() => {
+			if (!disposed) remeasure();
+		});
 		onMotionPreference();
 
 		return () => {
+			disposed = true;
 			stop();
 			resizes.disconnect();
 			removeEventListener('scroll', update);

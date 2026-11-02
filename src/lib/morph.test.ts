@@ -62,15 +62,18 @@ describe('createMorph', () => {
 		expect(run(morph, 2, 60)).toEqual({ progress: 0, done: true });
 	});
 
-	it('moves the same at 60Hz and 120Hz and does not jump after a long frame', () => {
+	it('moves the same at 60Hz and 120Hz', () => {
 		const a = createMorph();
 		const b = createMorph();
 		a.forward = b.forward = true;
 
 		expect(run(a, 0.3, 60).progress).toBeCloseTo(run(b, 0.3, 120).progress, 2);
+	});
 
-		const c = createMorph();
-		c.forward = true;
-		expect(c.step(3).progress).toBeLessThan(0.1);
+	it('does not jump after a long frame', () => {
+		const morph = createMorph();
+		morph.forward = true;
+
+		expect(morph.step(3).progress).toBeLessThan(0.1);
 	});
 });

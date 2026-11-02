@@ -9,7 +9,7 @@
 	<ul>
 		{#each tiles as tone, i (i)}
 			<li>
-				<a class="tile {tone}" href={PROFILE} aria-label="Good Sport on Instagram">
+				<a class="tile {tone}" href={PROFILE} tabindex="-1" aria-hidden="true">
 					<svg class="glyph" viewBox="0 0 24 24" aria-hidden="true">
 						<rect x="3" y="3" width="18" height="18" rx="5" />
 						<circle cx="12" cy="12" r="4.2" />

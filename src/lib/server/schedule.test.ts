@@ -119,6 +119,31 @@ describe('getGames', () => {
 		expect(games.some((game) => game.team === 'Sirens')).toBe(true);
 	});
 
+	it('tries a failed team again after a minute instead of waiting for the full refresh', async () => {
+		const getGames = await loadGetGames();
+		let nwslUp = false;
+		const { fetchFn } = fakeFetch([[/usa\.nwsl/, () => (nwslUp ? json(gotham)() : fails()())]]);
+
+		await getGames(fetchFn);
+		nwslUp = true;
+		vi.advanceTimersByTime(61 * 1000);
+		const games = await getGames(fetchFn);
+
+		expect(games.some((game) => game.team === 'Gotham FC')).toBe(true);
+	});
+
+	it('refetches once ten minutes have passed', async () => {
+		const getGames = await loadGetGames();
+		const { fetchFn, calls } = fakeFetch();
+
+		await getGames(fetchFn);
+		const firstRound = calls.length;
+		vi.advanceTimersByTime(10 * 60 * 1000 + 1);
+		await getGames(fetchFn);
+
+		expect(calls.length).toBe(firstRound * 2);
+	});
+
 	it('does not refetch within ten minutes', async () => {
 		const getGames = await loadGetGames();
 		const { fetchFn, calls } = fakeFetch();
