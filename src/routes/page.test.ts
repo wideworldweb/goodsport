@@ -23,6 +23,7 @@ function post(overrides: Partial<Post>): Post {
 		pubDate: '2026-10-19T16:00:00.000Z',
 		author: 'Christiana Cromer',
 		image: null,
+		audio: null,
 		...overrides
 	};
 }
@@ -139,36 +140,130 @@ describe('home page chrome', () => {
 	});
 });
 
-describe('home page post list', () => {
-	it('lists older posts below the hero as links with their New York publish dates', () => {
-		const items = listItems(
-			renderPage(
-				feed([
-					weeklyIssue,
-					post({
-						title: 'Season recap',
-						link: 'https://www.goodsportnyc.com/p/recap',
-						pubDate: '2026-10-13T16:00:00.000Z'
-					}),
-					post({
-						title: 'Sunday night guide',
-						link: 'https://www.goodsportnyc.com/p/sunday',
-						pubDate: '2026-10-12T02:30:00.000Z'
-					})
-				])
-			)
-		);
+const section = (html: string, heading: string) => {
+	const at = html.search(new RegExp(`<h2\\b[^>]*>\\s*${heading}\\s*</h2>`, 'i'));
+	if (at < 0) return null;
+	const end = html.indexOf('</section>', at);
+	return html.slice(at, end < 0 ? undefined : end);
+};
 
-		const recap = items.find((li) => textOf(li).includes('Season recap'))!;
-		const sunday = items.find((li) => textOf(li).includes('Sunday night guide'))!;
-		expect(links(recap)).toContainEqual({ href: 'https://www.goodsportnyc.com/p/recap', text: 'Season recap' });
-		expect(textOf(recap)).toContain('Oct 13, 2026');
-		expect(textOf(sunday)).toContain('Oct 11, 2026');
+const issue = (n: number, day: number) =>
+	post({
+		title: `[Good Sport NYC] Women's Sports in New York: Sep ${day} - ${day + 6}`,
+		link: `https://www.goodsportnyc.com/p/issue-${n}`,
+		pubDate: `2026-09-${String(day).padStart(2, '0')}T16:00:00.000Z`,
+		image: `https://substackcdn.com/image/issue-${n}.jpg`
 	});
 
-	it('does not repeat the newest post in the list', () => {
-		const items = listItems(renderPage(feed([weeklyIssue, post({ title: 'Season recap' })])));
+const episode = (title: string, slug: string, pubDate: string) =>
+	post({
+		title,
+		link: `https://www.goodsportnyc.com/p/${slug}`,
+		pubDate,
+		image: `https://substackcdn.com/image/${slug}.png`,
+		audio: `https://api.substack.com/feed/podcast/${slug}.mp3`
+	});
 
-		expect(items.flatMap(links).map((link) => link.href)).not.toContain(weeklyIssue.link);
+const usOpen = post({
+	title: 'Everything at stake at the US Open Women’s Semifinals',
+	link: 'https://www.goodsportnyc.com/p/us-open',
+	description: 'Q&A with Ryan Willison on the stakes for the four women left.',
+	pubDate: '2026-09-10T16:00:00.000Z',
+	image: 'https://substackcdn.com/image/us-open.jpg'
+});
+
+const fullFeed = feed([
+	weeklyIssue,
+	episode('Meaning Making in Sports Media with Harry Krinsky', 'harry', '2026-10-15T11:00:00.000Z'),
+	issue(1, 21),
+	episode('The Sports Media Nepisode with Ashtyn Butuso', 'ashtyn', '2026-10-01T11:00:00.000Z'),
+	issue(2, 14),
+	episode("Inside Pro Women's Rugby with NY Exiles' Faith Morley", 'faith', '2026-09-18T11:00:00.000Z'),
+	usOpen,
+	issue(3, 7),
+	issue(4, 1),
+	episode('Why I’m Building a Women’s Sports Media Company', 'why', '2026-08-28T11:00:00.000Z'),
+	episode('Are the New York Liberty okay?', 'liberty', '2026-08-14T11:00:00.000Z')
+]);
+
+describe('the latest section', () => {
+	it('features the newest regular post with its image, date and description', () => {
+		const latest = section(renderPage(fullFeed), 'The Latest')!;
+
+		expect(links(latest)).toContainEqual({
+			href: 'https://www.goodsportnyc.com/p/us-open',
+			text: 'Everything at stake at the US Open Women’s Semifinals'
+		});
+		expect(images(latest).map((img) => img.src)).toContain('https://substackcdn.com/image/us-open.jpg');
+		expect(textOf(latest)).toContain('Q&A with Ryan Willison on the stakes for the four women left.');
+		expect(textOf(latest)).toMatch(/Newsletter\W+Sep 10/);
+	});
+
+	it('numbers the three newest weekly issues after the hero, without the newsletter prefix', () => {
+		const latest = section(renderPage(fullFeed), 'The Latest')!;
+		const text = textOf(latest);
+
+		expect(text).toMatch(
+			/01[\s\S]*Women's Sports in New York: Sep 21 - 27[\s\S]*02[\s\S]*Women's Sports in New York: Sep 14 - 20[\s\S]*03[\s\S]*Women's Sports in New York: Sep 7 - 13/
+		);
+		expect(text).not.toContain('Sep 1 - 7');
+		expect(text).not.toContain('[Good Sport NYC]');
+		expect(links(latest).map((link) => link.href)).not.toContain(weeklyIssue.link);
+	});
+
+	it('links to the full archive', () => {
+		expect(links(section(renderPage(fullFeed), 'The Latest')!)).toContainEqual({
+			href: 'https://www.goodsportnyc.com/archive',
+			text: 'See all'
+		});
+	});
+
+	it('shows dates in New York time', () => {
+		const late = post({ title: 'Late night post', link: 'https://www.goodsportnyc.com/p/late', pubDate: '2026-09-11T02:30:00.000Z' });
+		const latest = section(renderPage(feed([weeklyIssue, late])), 'The Latest')!;
+
+		expect(textOf(latest)).toMatch(/Sep 10\b/);
+	});
+});
+
+describe('the podcast section', () => {
+	it('shows the four newest episodes, named after their guests, linking to each episode', () => {
+		const podcast = section(renderPage(fullFeed), 'The Podcast')!;
+		const episodeLinks = links(podcast).filter((link) => link.href.includes('/p/'));
+
+		expect(episodeLinks.map((link) => link.href)).toEqual([
+			'https://www.goodsportnyc.com/p/harry',
+			'https://www.goodsportnyc.com/p/ashtyn',
+			'https://www.goodsportnyc.com/p/faith',
+			'https://www.goodsportnyc.com/p/why'
+		]);
+		const text = textOf(podcast);
+		expect(text).toContain('Harry Krinsky');
+		expect(text).toContain('Ashtyn Butuso');
+		expect(text).toContain('Faith Morley');
+		expect(text).toContain('Why I’m Building a Women’s Sports Media Company');
+	});
+
+	it('links to all episodes', () => {
+		expect(links(section(renderPage(fullFeed), 'The Podcast')!)).toContainEqual({
+			href: 'https://www.goodsportnyc.com/podcast',
+			text: 'All episodes'
+		});
+	});
+
+	it('does not repeat an episode that is already the hero', () => {
+		const heroEpisode = episode('Fresh episode with Sue Bird', 'sue', '2026-10-28T11:00:00.000Z');
+		const podcast = section(renderPage(feed([heroEpisode, ...fullFeed.posts])), 'The Podcast')!;
+
+		expect(links(podcast).map((link) => link.href)).not.toContain(heroEpisode.link);
+	});
+});
+
+describe('sections without posts', () => {
+	it('leaves out the latest and podcast sections when there is nothing to show', () => {
+		const body = renderPage(feed([weeklyIssue]));
+
+		expect(section(body, 'The Latest')).toBeNull();
+		expect(section(body, 'The Podcast')).toBeNull();
 	});
 });

@@ -1,15 +1,20 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte';
 	import Hero from '$lib/components/Hero.svelte';
+	import Latest from '$lib/components/Latest.svelte';
+	import Podcast from '$lib/components/Podcast.svelte';
 	import Ticker from '$lib/components/Ticker.svelte';
 	import TopBar from '$lib/components/TopBar.svelte';
-	import { formatDate, headline } from '$lib/post';
+	import { isEpisode, isIssue } from '$lib/post';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 
-	const latest = $derived(data.feed.posts[0]);
-	const older = $derived(data.feed.posts.slice(1));
+	const hero = $derived(data.feed.posts[0]);
+	const rest = $derived(data.feed.posts.slice(1));
+	const featured = $derived(rest.find((post) => !isEpisode(post) && !isIssue(post)));
+	const issues = $derived(rest.filter(isIssue).slice(0, 3));
+	const episodes = $derived(rest.filter(isEpisode).slice(0, 4));
 
 	const tickerItems = ['This week', 'Liberty', 'Gotham FC', 'Sirens', 'Exiles', 'What to watch, where'];
 </script>
@@ -23,8 +28,8 @@
 <Header title={data.feed.title} />
 
 <main>
-	{#if latest}
-		<Hero post={latest} byline={data.feed.title} now={data.now} />
+	{#if hero}
+		<Hero post={hero} byline={data.feed.title} now={data.now} />
 	{/if}
 
 	<div class="tickers">
@@ -33,65 +38,11 @@
 		<Ticker items={tickerItems} background="var(--red)" color="var(--cream)" seconds={41} />
 	</div>
 
-	{#if older.length > 0}
-		<section class="archive layer" aria-labelledby="archive-heading">
-			<h2 id="archive-heading">More from {data.feed.title}</h2>
-			<ul>
-				{#each older as post (post.link)}
-					<li>
-						<a href={post.link}>{headline(post.title)}</a>
-						<time datetime={post.pubDate}>{formatDate(post.pubDate)}</time>
-					</li>
-				{/each}
-			</ul>
-		</section>
+	{#if featured || issues.length > 0}
+		<Latest {featured} {issues} />
+	{/if}
+
+	{#if episodes.length > 0}
+		<Podcast {episodes} />
 	{/if}
 </main>
-
-<style>
-	.archive {
-		max-width: 56rem;
-		padding: 3rem var(--page-pad) 4rem;
-	}
-
-	h2 {
-		margin: 0 0 1.5rem;
-		font-family: var(--font-display);
-		font-weight: 400;
-		font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-		color: var(--blue);
-	}
-
-	ul {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	li {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		gap: 1.5rem;
-		padding: 0.9rem 0;
-		border-bottom: 2px dotted var(--ink);
-	}
-
-	li a {
-		font-size: 1.1rem;
-		font-weight: 600;
-		text-decoration: none;
-	}
-
-	li a:hover {
-		color: var(--red);
-	}
-
-	time {
-		flex: none;
-		font-family: var(--font-mono);
-		font-size: 0.75rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-	}
-</style>

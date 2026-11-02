@@ -10,6 +10,7 @@ export interface Post {
 	pubDate: string;
 	author: string;
 	image: string | null;
+	audio: string | null;
 }
 
 export interface Feed {
@@ -28,6 +29,10 @@ function text(value: unknown): string {
 	return '';
 }
 
+function firstImageIn(html: string): string | null {
+	return html.match(/<img\b[^>]*\bsrc="([^"]+)"/)?.[1] ?? null;
+}
+
 function parseFeed(xml: string): Feed {
 	const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
 	const doc = parser.parse(xml);
@@ -39,13 +44,19 @@ function parseFeed(xml: string): Feed {
 	const posts: Post[] = rawItems.flatMap((item: Record<string, unknown>) => {
 		const published = new Date(text(item.pubDate));
 		if (Number.isNaN(published.getTime())) return [];
+		const enclosure = item.enclosure as Record<string, string> | undefined;
+		const enclosureType = enclosure?.['@_type'] ?? '';
+		const enclosureUrl = enclosure?.['@_url'] ?? null;
 		return {
 			title: text(item.title),
 			link: text(item.link),
 			description: text(item.description),
 			pubDate: published.toISOString(),
 			author: text(item['dc:creator']),
-			image: (item.enclosure as Record<string, string> | undefined)?.['@_url'] ?? null
+			image: enclosureType.startsWith('image/')
+				? enclosureUrl
+				: firstImageIn(text(item['content:encoded'])),
+			audio: enclosureType.startsWith('audio/') ? enclosureUrl : null
 		};
 	});
 

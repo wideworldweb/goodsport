@@ -6,7 +6,7 @@
 	];
 </script>
 
-<div class="top-bar layer">
+<div class="top-bar">
 	<p>Women's sports culture in New York City</p>
 	<nav aria-label="Elsewhere">
 		{#each links as link, i (link.label)}

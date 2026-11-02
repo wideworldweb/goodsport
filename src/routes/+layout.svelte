@@ -3,6 +3,7 @@
 	import '@fontsource/alfa-slab-one';
 	import '@fontsource/dm-mono/400.css';
 	import '@fontsource/saira-extra-condensed/700.css';
+	import '@fontsource/saira-extra-condensed/800.css';
 	import '@fontsource/dm-mono/500.css';
 	import '../app.css';
 

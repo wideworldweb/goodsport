@@ -50,7 +50,17 @@ describe('getFeed', () => {
 				description: "Everything you should know this week as a women's sports fan in NYC.",
 				pubDate: '2026-10-19T23:43:05.000Z',
 				author: 'Christiana Cromer',
-				image: 'https://substackcdn.com/image/oct-19.webp'
+				image: 'https://substackcdn.com/image/oct-19.webp',
+				audio: null
+			},
+			{
+				title: 'Meaning Making in Sports Media with Harry Krinsky',
+				link: 'https://www.goodsportnyc.com/p/meaning-making',
+				description: 'Listen now (66 mins) | I talked to the co-host of Nothing But Respect.',
+				pubDate: '2026-10-15T11:03:57.000Z',
+				author: 'Christiana Cromer',
+				image: 'https://substackcdn.com/image/fetch/harry-cover.png',
+				audio: 'https://api.substack.com/feed/podcast/220484694/episode.mp3'
 			},
 			{
 				title: 'Liberty & Gotham: a season recap',
@@ -58,7 +68,8 @@ describe('getFeed', () => {
 				description: 'Looking back at the year.',
 				pubDate: '2026-10-13T12:00:00.000Z',
 				author: 'Christiana Cromer',
-				image: null
+				image: null,
+				audio: null
 			}
 		]);
 	});
@@ -103,7 +114,7 @@ describe('getFeed', () => {
 		vi.advanceTimersByTime(TEN_MINUTES - 1);
 		const feed = await getFeed(fetchFn);
 
-		expect(feed.posts).toHaveLength(2);
+		expect(feed.posts).toHaveLength(3);
 	});
 
 	it('refetches once ten minutes have passed', async () => {
@@ -134,6 +145,6 @@ describe('getFeed', () => {
 		vi.advanceTimersByTime(TEN_MINUTES);
 		const feed = await getFeed(fetchFn);
 
-		expect(feed.posts).toHaveLength(2);
+		expect(feed.posts).toHaveLength(3);
 	});
 });
