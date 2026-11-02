@@ -43,23 +43,6 @@ a {
 	color: inherit;
 }
 
-.oval {
-	--tilt: 17deg;
-	--ratio: 0.6;
-
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	z-index: 1;
-	/* Sized so the rotated ellipse's outer edge touches both sides of the viewport. */
-	width: calc(100% / sqrt(pow(cos(var(--tilt)), 2) + pow(var(--ratio) * sin(var(--tilt)), 2)));
-	aspect-ratio: 1 / var(--ratio);
-	border: 24px solid var(--white);
-	border-radius: 50%;
-	transform: translate(-50%, -50%) rotate(calc(-1 * var(--tilt)));
-	pointer-events: none;
-}
-
 :where(.layer) > * {
 	position: relative;
 	z-index: 2;

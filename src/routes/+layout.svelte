@@ -6,6 +6,7 @@
 	import '@fontsource/saira-extra-condensed/800.css';
 	import '@fontsource/dm-mono/500.css';
 	import '../app.css';
+	import Oval from '$lib/components/Oval.svelte';
 
 	let { children } = $props();
 </script>
@@ -14,6 +15,6 @@
 	<link rel="preload" href="/fonts/MinimalFont5x7.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
 </svelte:head>
 
-<div class="oval" aria-hidden="true"></div>
+<Oval />
 
 {@render children()}

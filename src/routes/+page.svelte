@@ -24,10 +24,10 @@
 	<meta name="description" content={data.feed.description} />
 </svelte:head>
 
-<TopBar />
-<Header title={data.feed.title} />
+<div data-swing-section>
+	<TopBar />
+	<Header title={data.feed.title} />
 
-<main>
 	{#if hero}
 		<Hero post={hero} byline={data.feed.title} now={data.now} />
 	{/if}
@@ -37,12 +37,18 @@
 		<Ticker items={tickerItems} background="var(--amber)" color="var(--blue)" direction="right" seconds={44} />
 		<Ticker items={tickerItems} background="var(--red)" color="var(--cream)" seconds={41} />
 	</div>
+</div>
 
+<main>
 	{#if featured || issues.length > 0}
-		<Latest {featured} {issues} />
+		<div data-swing-section>
+			<Latest {featured} {issues} />
+		</div>
 	{/if}
 
 	{#if episodes.length > 0}
-		<Podcast {episodes} />
+		<div data-swing-section>
+			<Podcast {episodes} />
+		</div>
 	{/if}
 </main>
