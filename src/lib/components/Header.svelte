@@ -52,7 +52,6 @@
 	nav a,
 	.subscribe {
 		font-family: var(--font-condensed);
-		font-stretch: 72%;
 		font-weight: 700;
 		text-transform: uppercase;
 		text-decoration: none;
@@ -60,7 +59,7 @@
 	}
 
 	nav a {
-		font-size: clamp(1rem, 1.9vw, 1.25rem);
+		font-size: clamp(1.25rem, 2.4vw, 1.6rem);
 		background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat;
 		transition: background-size 150ms ease-out;
 	}
@@ -74,7 +73,7 @@
 		padding: 0.6rem clamp(1.25rem, 3vw, 2.4rem) 0.7rem;
 		background: var(--red);
 		color: var(--cream);
-		font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+		font-size: clamp(1.9rem, 4.2vw, 3rem);
 		line-height: 1.1;
 		transition: background-color 150ms ease-out;
 	}
@@ -93,7 +92,7 @@
 		}
 
 		.subscribe {
-			font-size: 1.25rem;
+			font-size: 1.6rem;
 		}
 	}
 </style>

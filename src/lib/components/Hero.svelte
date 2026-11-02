@@ -187,9 +187,8 @@
 		position: relative;
 		color: var(--cream);
 		font-family: var(--font-condensed);
-		font-stretch: 62%;
-		font-weight: 800;
-		font-size: clamp(1rem, 2.2vw, 1.35rem);
+		font-weight: 700;
+		font-size: clamp(1.25rem, 2.8vw, 1.75rem);
 		line-height: 0.95;
 		text-align: center;
 		text-transform: uppercase;
