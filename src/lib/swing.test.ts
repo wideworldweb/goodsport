@@ -1,18 +1,28 @@
 import { describe, expect, it } from 'vitest';
-import { createPendulum, sectionAngle } from './swing';
+import { createPendulum, sectionAngle, sectionTriggers } from './swing';
+
+describe('sectionTriggers', () => {
+	it('places each trigger a quarter of the way into its section', () => {
+		expect(sectionTriggers([{ top: 0, height: 1000 }, { top: 1000, height: 800 }], 10_000)).toEqual([250, 1200]);
+	});
+
+	it('pulls a trigger the reading line can never reach back to the furthest reachable line', () => {
+		expect(sectionTriggers([{ top: 2000, height: 1600 }], 2100)).toEqual([2100]);
+	});
+});
 
 describe('sectionAngle', () => {
 	const triggers = [500, 1800, 2900];
 
-	it('starts at the first section’s angle before any section middle has been reached', () => {
+	it('starts at the first section’s angle before any trigger has been reached', () => {
 		expect(sectionAngle(triggers, 300, 17)).toBe(-17);
 	});
 
-	it('keeps the first section’s angle once its own middle passes', () => {
+	it('keeps the first section’s angle once its own trigger passes', () => {
 		expect(sectionAngle(triggers, 900, 17)).toBe(-17);
 	});
 
-	it('mirrors the angle when the next section’s middle passes the reading line', () => {
+	it('mirrors the angle when the next section’s trigger passes the reading line', () => {
 		expect(sectionAngle(triggers, 1799, 17)).toBe(-17);
 		expect(sectionAngle(triggers, 1800, 17)).toBe(17);
 	});

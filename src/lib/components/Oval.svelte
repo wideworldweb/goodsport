@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { createPendulum, sectionAngle } from '$lib/swing';
+	import { createPendulum, sectionAngle, sectionTriggers } from '$lib/swing';
 
 	const TILT = 17;
 
@@ -14,12 +14,12 @@
 		let last = 0;
 
 		function measure() {
-			// The last section's middle may never reach the screen's middle, so cap it at the furthest reachable line.
 			const furthest = document.documentElement.scrollHeight - innerHeight / 2 - 1;
-			triggers = [...document.querySelectorAll('[data-swing-section]')].map((section) => {
+			const sections = [...document.querySelectorAll('[data-swing-section]')].map((section) => {
 				const box = section.getBoundingClientRect();
-				return Math.min(box.top + scrollY + box.height / 2, furthest);
+				return { top: box.top + scrollY, height: box.height };
 			});
+			triggers = sectionTriggers(sections, furthest);
 		}
 
 		measure();

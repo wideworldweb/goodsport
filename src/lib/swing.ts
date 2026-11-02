@@ -3,11 +3,20 @@ const DAMPING = 6.3;
 const MAX_FRAME = 0.05;
 const SUBSTEP = 1 / 240;
 const REST = 0.05;
+const TRIGGER_DEPTH = 0.25;
 
 /**
- * The oval's angle for a reading line (a document y position), given the y position of
- * each section's middle. Sections alternate between -tilt and +tilt, and a section takes
- * over once its middle reaches the reading line.
+ * Document y positions where each section takes over the oval: a quarter of the way into the
+ * section, or the furthest line the reader can reach if the page ends before that.
+ */
+export function sectionTriggers(sections: { top: number; height: number }[], furthest: number): number[] {
+	return sections.map(({ top, height }) => Math.min(top + height * TRIGGER_DEPTH, furthest));
+}
+
+/**
+ * The oval's angle for a reading line (a document y position), given each section's trigger.
+ * Sections alternate between -tilt and +tilt, and a section takes over once its trigger
+ * reaches the reading line.
  */
 export function sectionAngle(triggers: number[], readingLine: number, tilt: number): number {
 	const passed = triggers.filter((y) => y <= readingLine).length;
