@@ -26,11 +26,14 @@
 			]
 		}
 	];
+
+	const year = new Date().getFullYear();
 </script>
 
 <footer class="layer">
-	<img class="logo" src="/logo.png" alt="" width="998" height="668" />
-	<nav aria-label="Footer">
+	<div class="top">
+		<img class="logo" src="/logo.png" alt="" width="998" height="668" />
+		<nav aria-label="Footer">
 		{#each columns as column (column.heading)}
 			<div>
 				<h2>{column.heading}</h2>
@@ -41,18 +44,59 @@
 				</ul>
 			</div>
 		{/each}
-	</nav>
+		</nav>
+	</div>
+
+	<div class="credit">
+		<p>© {year} Good Sport NYC <span aria-hidden="true">•</span> Women's sports culture in New York City</p>
+		<p>A sports media company from <a href="https://www.goodsportnyc.com/about">Christiana Cromer</a></p>
+	</div>
 </footer>
 
 <style>
 	footer {
+		padding: 2.5rem var(--page-pad) 1.5rem;
+		background: var(--blue);
+		color: var(--cream);
+	}
+
+	.top {
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-start;
 		gap: 2rem;
-		padding: 2.5rem var(--page-pad) 3rem;
-		background: var(--blue);
-		color: var(--cream);
+		padding-bottom: 2.5rem;
+		margin-bottom: 2rem;
+		border-bottom: 2px dotted var(--cream);
+	}
+
+	.credit {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem 2rem;
+		flex-wrap: wrap;
+		padding: 0.75rem 1.75rem;
+		background: var(--amber);
+		color: var(--ink);
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+
+	.credit p {
+		margin: 0;
+	}
+
+	.credit span {
+		margin: 0 1.25rem;
+	}
+
+	.credit a {
+		font-size: inherit;
+		font-weight: 400;
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
 	}
 
 	.logo {
@@ -97,7 +141,7 @@
 	}
 
 	@media (max-width: 40rem) {
-		footer {
+		.top {
 			flex-direction: column;
 		}
 	}

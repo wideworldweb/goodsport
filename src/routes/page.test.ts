@@ -370,4 +370,14 @@ describe('the footer', () => {
 		});
 		expect(Object.keys(byText)).toEqual(expect.arrayContaining(['Discord', 'Donate']));
 	});
+
+	it('ends with the copyright year, tagline and who makes Good Sport', () => {
+		const footer = renderPage(feed([])).match(/<footer\b[\s\S]*<\/footer>/)![0];
+		const text = textOf(footer);
+
+		expect(text).toContain(`© ${new Date().getFullYear()} Good Sport NYC`);
+		expect(text).toContain("Women's sports culture in New York City");
+		expect(text).toMatch(/A sports media company from Christiana Cromer/);
+		expect(links(footer).map((link) => link.text)).toContain('Christiana Cromer');
+	});
 });
