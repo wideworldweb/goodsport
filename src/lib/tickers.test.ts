@@ -40,23 +40,23 @@ describe('up next band', () => {
 		);
 
 		expect(upNext.slice(0, 2)).toEqual([
-			'Gotham FC at Bay FC · Sun Nov 8 · 9:30PM · PayPal Park',
-			'Sirens vs Fleet · Sun Dec 6 · 3PM · Prudential Center'
+			'Gotham FC at Bay FC, Sun Nov 8, 9:30PM, PayPal Park',
+			'Sirens vs Fleet, Sun Dec 6, 3PM, Prudential Center'
 		]);
 	});
 
 	it('says when an off-season team is back', () => {
 		const [upNext] = tickerBands([game({})], [], NOW);
 
-		expect(upNext).toContain('Liberty · Back in May');
-		expect(upNext).toContain('Gotham FC · Back in March');
-		expect(upNext).not.toContain('Sirens · Back in December');
+		expect(upNext).toContain('Liberty: Back in May');
+		expect(upNext).toContain('Gotham FC: Back in March');
+		expect(upNext).not.toContain('Sirens: Back in December');
 	});
 
 	it('treats a game more than six weeks out as the off-season', () => {
 		const [upNext] = tickerBands([game({ team: 'Liberty', start: '2027-05-15T23:00:00.000Z' })], [], NOW);
 
-		expect(upNext).toContain('Liberty · Back in May');
+		expect(upNext).toContain('Liberty: Back in May');
 	});
 });
 
@@ -83,6 +83,18 @@ describe('results band', () => {
 	});
 });
 
+describe('every band', () => {
+	it('only uses separators the pixel font draws at the right height', () => {
+		const bands = tickerBands(
+			[{ team: 'Sirens', opponent: 'Fleet', home: true, start: '2026-12-06T20:00:00.000Z', venue: 'Prudential Center', final: false, teamScore: null, opponentScore: null }],
+			[post('Meaning Making with Harry Krinsky', 'https://x/ep.mp3')],
+			NOW
+		);
+
+		expect(bands.flat().join(' ')).not.toMatch(/[·•–—’‘“”]/);
+	});
+});
+
 describe('good sport band', () => {
 	it('names the newest issue and newest episode with straight apostrophes', () => {
 		const [, , ours] = tickerBands(
@@ -96,9 +108,9 @@ describe('good sport band', () => {
 		);
 
 		expect(ours).toEqual([
-			"New issue · Women's Sports in New York: Oct 19 - 25",
-			'New on the pod · Harry Krinsky',
-			'Latest · WNBA Finals Game 6 Moves to a Workday Matinee'
+			"New issue: Women's Sports in New York: Oct 19 - 25",
+			'New on the pod: Harry Krinsky',
+			'Latest: WNBA Finals Game 6 Moves to a Workday Matinee'
 		]);
 	});
 });

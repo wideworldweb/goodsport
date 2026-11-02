@@ -49,7 +49,6 @@
 
 	.copy {
 		flex: none;
-		padding-right: 0.6em;
 		font-family: var(--font-pixel);
 		font-size: 32px;
 		line-height: 1;

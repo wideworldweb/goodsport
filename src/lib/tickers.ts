@@ -16,7 +16,7 @@ const plain = (text: string) => text.replace(/[‘’]/g, "'").replace(/[“”]
 function kickoff(iso: string): string {
 	const date = new Date(iso);
 	const time = timeFmt.format(date).replace(':00', '').replace(' ', '');
-	return `${dayFmt.format(date).replace(',', '')} · ${time}`;
+	return `${dayFmt.format(date).replace(',', '')}, ${time}`;
 }
 
 function upNext(games: Game[], now: number): string[] {
@@ -32,9 +32,9 @@ function upNext(games: Game[], now: number): string[] {
 		.map((game) =>
 			[`${game.team} ${game.home ? 'vs' : 'at'} ${game.opponent}`, kickoff(game.start), game.venue]
 				.filter(Boolean)
-				.join(' · ')
+				.join(', ')
 		);
-	const offSeason = TEAMS.filter((_, i) => next[i] === undefined).map((team) => `${team.name} · Back in ${team.returns}`);
+	const offSeason = TEAMS.filter((_, i) => next[i] === undefined).map((team) => `${team.name}: Back in ${team.returns}`);
 	return [...scheduled, ...offSeason].map(plain);
 }
 
@@ -53,9 +53,9 @@ function fromPosts(posts: Post[]): string[] {
 	const episode = posts.find(isEpisode);
 	const latest = posts.find((post) => !isIssue(post) && !isEpisode(post));
 	return [
-		issue && `New issue · ${headline(issue.title)}`,
-		episode && `New on the pod · ${episodeName(episode.title)}`,
-		latest && `Latest · ${latest.title}`
+		issue && `New issue: ${headline(issue.title)}`,
+		episode && `New on the pod: ${episodeName(episode.title)}`,
+		latest && `Latest: ${latest.title}`
 	]
 		.filter((item): item is string => Boolean(item))
 		.map(plain);
