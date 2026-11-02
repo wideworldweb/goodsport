@@ -1,6 +1,6 @@
 <script lang="ts">
 	const CARD_TILT = 5;
-	const rows = Array.from({ length: 5 });
+	const rows = Array.from({ length: 8 });
 </script>
 
 <section class="subscribe layer">
@@ -49,8 +49,9 @@
 		color: var(--red);
 		font-family: var(--font-condensed);
 		font-weight: 800;
-		font-size: clamp(4rem, 9vw, 7.5rem);
-		line-height: 0.86;
+		font-size: clamp(5.5rem, 14vw, 12rem);
+		line-height: 0.7;
+		letter-spacing: -0.015em;
 		text-transform: uppercase;
 		paint-order: stroke fill;
 		-webkit-text-stroke: 0.03em var(--blue);
@@ -65,9 +66,9 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		width: min(42rem, 88vw);
-		aspect-ratio: 1 / 0.56;
-		padding: 0 12%;
+		width: min(62rem, 80vw);
+		aspect-ratio: 1 / 0.5;
+		padding: 0 16%;
 		border-radius: 50%;
 		background: var(--cream);
 		color: var(--ink);
