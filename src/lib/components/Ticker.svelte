@@ -14,7 +14,6 @@
 	} = $props();
 
 	const COPIES = 4;
-	const line = $derived(items.map((item) => `${item} — `).join(''));
 </script>
 
 <div
@@ -27,7 +26,9 @@
 	<p class="visually-hidden">{items.join(', ')}</p>
 	<div class="track" aria-hidden="true">
 		{#each { length: COPIES }, i (i)}
-			<span class="copy">{line}</span>
+			<span class="copy"
+				>{#each items as item, j (j)}{item}<span class="dash">-</span>{/each}</span
+			>
 		{/each}
 	</div>
 </div>
@@ -57,6 +58,13 @@
 		white-space: pre;
 		will-change: transform;
 		animation: scroll var(--seconds) linear infinite;
+	}
+
+	/* The pixel font has no long dash, so stretch its hyphen, which sits at the font's mid-height. */
+	.dash {
+		display: inline-block;
+		margin: 0 0.75em;
+		transform: scaleX(2.4);
 	}
 
 	.right .copy {
