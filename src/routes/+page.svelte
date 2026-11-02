@@ -19,7 +19,7 @@
 	const issues = $derived(rest.filter(isIssue).slice(0, 3));
 	const episodes = $derived(rest.filter(isEpisode).slice(0, 4));
 
-	const tickerItems = ['This week', 'Liberty', 'Gotham FC', 'Sirens', 'Exiles', 'What to watch, where'];
+	const band = (i: number) => (data.tickers[i]?.length ? data.tickers[i] : [data.feed.title]);
 </script>
 
 <svelte:head>
@@ -36,9 +36,9 @@
 	{/if}
 
 	<div class="tickers">
-		<Ticker items={tickerItems} background="var(--cream)" color="var(--red)" seconds={38} />
-		<Ticker items={tickerItems} background="var(--amber)" color="var(--blue)" direction="right" seconds={44} />
-		<Ticker items={tickerItems} background="var(--red)" color="var(--cream)" seconds={41} />
+		<Ticker items={band(0)} background="var(--cream)" color="var(--red)" seconds={38} />
+		<Ticker items={band(1)} background="var(--amber)" color="var(--blue)" direction="right" seconds={44} />
+		<Ticker items={band(2)} background="var(--red)" color="var(--cream)" seconds={41} />
 	</div>
 </div>
 

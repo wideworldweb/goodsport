@@ -36,8 +36,8 @@ const weeklyIssue = post({
 	image: 'https://substackcdn.com/image/fetch/oct-19.jpg'
 });
 
-const renderPage = (f: Feed, now = NOW) =>
-	render(Page, { props: { data: { feed: f, now }, params: {} } as never }).body;
+const renderPage = (f: Feed, now = NOW, tickers: string[][] = [[], [], []]) =>
+	render(Page, { props: { data: { feed: f, now, tickers }, params: {} } as never }).body;
 
 const decode = (s: string) =>
 	s
@@ -120,6 +120,22 @@ describe('home page hero', () => {
 
 		expect(headings(body)).toEqual(['No photo this week']);
 		expect(images(body).filter((img) => img.src !== '/logo.png')).toEqual([]);
+	});
+});
+
+describe('ticker bands', () => {
+	it('show the up-next, results and Good Sport items they are given', () => {
+		const text = textOf(
+			renderPage(feed([]), NOW, [
+				['Sirens vs Fleet · Sun Dec 6 · 3PM · Prudential Center'],
+				['Gotham FC 2-0 Utah'],
+				['New on the pod · Harry Krinsky']
+			])
+		);
+
+		expect(text).toContain('Sirens vs Fleet · Sun Dec 6 · 3PM · Prudential Center');
+		expect(text).toContain('Gotham FC 2-0 Utah');
+		expect(text).toContain('New on the pod · Harry Krinsky');
 	});
 });
 
